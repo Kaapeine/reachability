@@ -5,6 +5,7 @@ import json
 import math
 import matplotlib.pyplot as plt
 import matplotlib
+import time
 from matplotlib.collections import PatchCollection
 from dijkstra import Dijkstra
 
@@ -35,7 +36,7 @@ def checkSector(current):
     
     # if there are no obstacles and previous sector's center was reachable
     if obstacles == 0 and current.parent.last_reached == current.parent.center:
-        print("Skip path searching")
+        # print("Skip path searching")
         current.color = 'green'
         current.last_reached = current.center
         animate(current.color, current)
@@ -128,7 +129,6 @@ def generateGridMap(points, resolution, margin):
 def findPath(sx, sy, gx, gy):
     global pathCount
     pathCount = pathCount + 1
-    print(pathCount)
     # print(sx, sy, gx, gy)
     rx, ry = planner.planning(sx, sy, gx, gy)
     if rx == -1:
@@ -246,8 +246,12 @@ if __name__ == "__main__":
     pathCount = 0
     
     # Start from the first sector
+    t1 = time.time()
+    print("Running reachability check algorithm")
     while len(sector_queue) > 0:
         checkSector(sector_queue.pop(0))
+    print("Exec time: ", time.time() - t1)
+    print("Number of path searches: ", pathCount)
 
     showFinal()
 
