@@ -187,11 +187,11 @@ class RRT:
             if node.parent:
                 plt.plot(node.path_x, node.path_y, "-g")
 
-        # for (ox, oy, size) in self.obstacle_list:
-        #     self.plot_circle(ox, oy, size)
+        for (ox, oy, size) in self.obstacle_list:
+            self.plot_circle(ox, oy, size)
 
-        for p in self.points:
-            plt.scatter(p[0], p[1])
+        # for p in self.points:
+        #     plt.scatter(p[0], p[1])
 
         if self.play_area is not None:
             plt.plot([self.play_area.xmin, self.play_area.xmax,
@@ -237,30 +237,30 @@ class RRT:
         else:
             return True  # inside - ok
 
-    # @staticmethod
-    # def check_collision(node, obstacleList, robot_radius):
-
-    #     if node is None:
-    #         return False
-
-    #     for (ox, oy, size) in obstacleList:
-    #         dx_list = [ox - x for x in node.path_x]
-    #         dy_list = [oy - y for y in node.path_y]
-    #         d_list = [dx * dx + dy * dy for (dx, dy) in zip(dx_list, dy_list)]
-
-    #         if min(d_list) <= (size+robot_radius)**2:
-    #             return False  # collision
-
-    #     return True  # safe
-
     @staticmethod
-    def check_collision(node, tree, robot_radius):
-        for i in range(len(node.path_x)):
-            ind = tree.query_radius([[node.path_x[i], node.path_y[i]]], r=robot_radius)
-            if len(ind) != 1:
-                return False
+    def check_collision(node, obstacleList, robot_radius):
+
+        if node is None:
+            return False
+
+        for (ox, oy, size) in obstacleList:
+            dx_list = [ox - x for x in node.path_x]
+            dy_list = [oy - y for y in node.path_y]
+            d_list = [dx * dx + dy * dy for (dx, dy) in zip(dx_list, dy_list)]
+
+            if min(d_list) <= (size+robot_radius)**2:
+                return False  # collision
+
+        return True  # safe
+
+    # @staticmethod
+    # def check_collision(node, tree, robot_radius):
+    #     for i in range(len(node.path_x)):
+    #         ind = tree.query_radius([[node.path_x[i], node.path_y[i]]], r=robot_radius)
+    #         if len(ind) != 1:
+    #             return False
     
-        return True
+    #     return True
 
     @staticmethod
     def calc_distance_and_angle(from_node, to_node):
@@ -275,8 +275,8 @@ def main(gx=6.0, gy=10.0):
     print("start " + __file__)
 
     # ====Search Path with RRT====
-    obstacleList = [(5, 5, 1), (3, 6, 2), (3, 8, 2), (3, 10, 2), (7, 5, 2),
-                    (9, 5, 2), (8, 10, 1)]  # [x, y, radius]
+    obstacleList = [(5, 5, 1), (3, 6, 2), (3, 8, 2), (3, 10, 2), (7, 5, 2)]
+                    #(9, 5, 2), (8, 10, 1)]  # [x, y, radius]
     # Set Initial parameters
     rrt = RRT(
         start=[0, 0],
@@ -284,7 +284,7 @@ def main(gx=6.0, gy=10.0):
         rand_area=[-2, 15],
         obstacle_list=obstacleList,
         points=None,
-        # play_area=[0, 10, 0, 14]
+        play_area=[0, 10, 0, 14],
         robot_radius=0.8
         )
     path = rrt.planning(animation=show_animation)
